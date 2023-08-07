@@ -43,8 +43,8 @@ jobs:
           aws ecr --region $REGION describe-repositories --registry-id $ECR_REGISTRY_ID --repository-names ${GITHUB_REPOSITORY#*/} || aws ecr --region $REGION create-repository --registry-id $ECR_REGISTRY_ID --repository-name ${GITHUB_REPOSITORY#*/}
           aws ecr --region $REGION set-repository-policy --registry-id $ECR_REGISTRY_ID --repository-name ${GITHUB_REPOSITORY#*/} --policy-text file:///home/runner/repo-access-permissions.json
           if [[ "$ARM64_SUPPORT" == "true" ]]; then
-            docker buildx build --platform linux/amd64,linux/arm64 --build-arg GIT_TOKEN=$${{ secrets.GO_MODULES_TOKEN }} -t $IMAGE_NAME --push docker/
+            docker buildx build --platform linux/amd64,linux/arm64 --build-arg GIT_TOKEN=$${{ secrets.GO_MODULES_TOKEN }} -t $IMAGE_NAME .
           else
-            docker buildx build --platform linux/amd64 --build-arg GIT_TOKEN=${{ secrets.GO_MODULES_TOKEN }} -t $IMAGE_NAME --push docker/
+            docker buildx build --platform linux/amd64 --build-arg GIT_TOKEN=${{ secrets.GO_MODULES_TOKEN }} -t $IMAGE_NAME --push .
           fi
           docker buildx imagetools inspect $IMAGE_NAME
